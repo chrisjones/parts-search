@@ -1,0 +1,41 @@
+# Usage:
+# 
+#       $ ruby import.rb /path/o/file.csv
+
+require 'tire'
+require 'csv'
+
+path       = ARGV[0]
+batch_size = 100
+buffer     = []
+index_name = ENV['INDEX'] || File.basename(path,'.*')
+
+unless path
+  puts "Usage: #{__FILE__} /path/to/file.csv"
+  exit 1
+end
+
+CSV.foreach(path, :headers => true) do |row|
+
+  # Add a line as JSON buffer
+  #
+  buffer << row.to_hash
+
+  # When we hit the match boundary...
+  if buffer.size % batch_size == 0
+
+    # ... load batch inot Elasticsearch...
+    Tire.index index_name.downcase do
+      STDERR.puts import(buffer), '-'*80
+    end
+
+    # ... and empty buffer
+    buffer = []
+  end
+end
+
+# Import any rest
+#
+Tire.index index_name.downcase do
+  STDERR.puts import(buffer), '-'*80
+end unless buffer.empty?

@@ -1,0 +1,28 @@
+  <div id="tfheader">
+      <div id="center-container">
+    <center><img src="Sighomes-Logo-350.jpg" alt="Signature Homes" /></center>
+    <h2><%= "#{@parts.count} part(s) matching \"#{@term}\"" %></h2>
+
+    <% unless @parts.count == 0 %>
+      <center>
+	    <table border="1">
+	      <tr bgcolor="black">
+	        <th><font color="white">Part Code</font></th>
+	        <th><font color="white">Part Description</font></th>
+	        <th><font color="white">Mfg Part Code</font></th>
+	      </tr>
+
+	      <% @parts.each do |part| %>
+	        <tr>
+	          <td><%= part["_source"]["partcode"] %></td>
+	          <td><%= part["_source"]["partdesc"] %></td>
+	          <td><%= part["_source"]["catcode"] %></td>
+	        </tr>  
+	      <% end %>
+	    </table>
+      </center>
+    <% end %>
+    <div id="copyright">&copy; 2015 NSH Corp dba Signature Homes</div>  
+  </div>
+ </div>
+  
